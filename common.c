@@ -677,24 +677,26 @@ int result;
 
 	do
 	{
+		unsigned int Offset = (Phys_Addr - Starting_Address);
 		result = sscanf (p, "%2x",&temp2);
 		if (result != 1) fprintf(stderr,"ReadDataBytes: error in line %d of hex file\n", Record_Nb);
 		p += 2;
 
 		/* Check that the physical address stays in the buffer's range. */
-		if (Phys_Addr < Max_Length)
+		if (Offset < Max_Length)
 		{
 			/* Overlapping record will erase the pad bytes */
 			if (Swap_Wordwise)
 			{
-				if (Memory_Block[Phys_Addr ^ 1] != Pad_Byte) fprintf(stderr,"Overlapped record detected\n");
-				Memory_Block[Phys_Addr++ ^ 1] = temp2;
+				if (Memory_Block[Offset ^ 1] != Pad_Byte) fprintf(stderr,"Overlapped record detected\n");
+				Memory_Block[Offset ^ 1] = temp2;
 			}
 			else
 			{
-				if (Memory_Block[Phys_Addr] != Pad_Byte) fprintf(stderr,"Overlapped record detected\n");
-				Memory_Block[Phys_Addr++] = temp2;
+				if (Memory_Block[Offset] != Pad_Byte) fprintf(stderr,"Overlapped record detected\n");
+				Memory_Block[Offset] = temp2;
 			}
+			Phys_Addr++;
 
 			Checksum = (Checksum + temp2) & 0xFF;
 		}
