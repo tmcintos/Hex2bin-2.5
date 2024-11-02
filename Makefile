@@ -12,7 +12,7 @@ WIN_GCC = $(WINDOWS)-gcc
 WIN_STRIP = $(WINDOWS)-strip
 
 INSTALL_DIR = /usr/local
-MAN_DIR = $(INSTALL_DIR)/man/man1
+MAN_DIR = $(INSTALL_DIR)/share/man/man1
 
 all: hex2bin mot2bin hex2bin.1
 
@@ -40,4 +40,4 @@ install:
 	cp hex2bin.1 $(MAN_DIR)
 
 clean:
-	rm core *.o hex2bin mot2bin
+	rm -f core *.o hex2bin mot2bin
