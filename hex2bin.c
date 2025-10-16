@@ -352,9 +352,6 @@ int main (int argc, char *argv[])
                 /* Check that the physical address stays in the buffer's range. */
                 if ((Phys_Addr >= Lowest_Address) && (Phys_Addr <= Highest_Address))
                 {
-                    /* The memory block begins at Lowest_Address */
-                    Phys_Addr -= Lowest_Address;
-
 					p = ReadDataBytes(p);
 
                     /* Read the Checksum value. */
