@@ -63,8 +63,8 @@ void usage(void);
 void DisplayCheckMethods(void);
 
 void *NoFailMalloc (size_t size);
-void NoFailOpenInputFile (char *Flnm);
-void NoFailOpenOutputFile (char *Flnm);
+void NoFailOpenInputFile (const char * Flnm);
+void NoFailOpenOutputFile (const char * Flnm);
 void GetLine(char* str,FILE *in);
 int GetBin(const char *str);
 int GetDec(const char *str);
@@ -76,6 +76,7 @@ void PutExtension(char *Flnm, char *Extension);
 
 filetype    Filename;           /* string for opening files */
 char        Extension[MAX_EXTENSION_SIZE];       /* filename extension for output files */
+const char *OutputFile;
 
 FILE        *Filin,             /* input files */
             *Filout;            /* output files */

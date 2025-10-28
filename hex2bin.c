@@ -108,8 +108,9 @@ int main (int argc, char *argv[])
 
     /* Just a normal file name */
     NoFailOpenInputFile (Filename);
-    PutExtension(Filename, Extension);
-    NoFailOpenOutputFile(Filename);
+    if ( ! OutputFile )
+        PutExtension(OutputFile = Filename, Extension);
+    NoFailOpenOutputFile(OutputFile);
     Fileread = true;
 
     /* When the hex file is opened, the program will read it in 2 passes.

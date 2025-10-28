@@ -150,7 +150,8 @@ Option list:
     [\-c]                Enable record checksum verification
     [\-C Poly Init RefIn RefOut XorOut]
                         \s-1CRC\s0 parameters
-    [\-e extension]      Output filename extension (without the dot)
+    [\-e extension]      Output filename extension (without the dot; default: bin);
+                        ignored if \-o is also specified.
     [\-E 0|1]            Endian for checksum/CRC, 0: little, 1: big
     [\-f address]        Address of check result to write
     [\-F address value]  Address and value to force
@@ -163,6 +164,7 @@ Option list:
                         File will be filled with Pattern
                         Length must be a power of 2 in hexadecimal [see \-l option]
                         Attention this option is \s-1STRONGER\s0 than Maximal Length
+    [\-o path]           Output file path
     [\-p pad byte]       Pad-byte value in hex (default: 0xFF)
     [\-r start end]      Range to compute checksum over (default is min and max addresses)
     [\-s address]        Starting address in hex for binary file (default: 0)
@@ -281,6 +283,12 @@ File Size Dimension will be a multiple of Minimum block size.
 File will be filled with Pattern.
 Length must be a power of 2 in hexadecimal [see \fB\-l\fR option]
 Attention this option is \s-1STRONGER\s0 than Maximal Length
+.PP
+\&\fB\-o path\fR
+.pp
+Specifies the output file path.
+.PP
+By default, this is derived from the input file path, by appending the specified or default extension.
 .PP
 \&\fB\-p pad_byte\fR
 .PP

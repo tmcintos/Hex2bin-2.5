@@ -87,7 +87,8 @@ void usage(void)
              "  -b            Batch mode: exits if specified file doesn't exist\n"
              "  -c            Enable record checksum verification\n"
              "  -C [Poly][Init][RefIn][RefOut][XorOut]\n                CRC parameters\n"
-             "  -e [ext]      Output filename extension (without the dot)\n"
+             "  -e [ext]      Output filename extension (without the dot; default: bin);\n"
+             "                ignored if -o is also specified.\n"
              "  -E [0|1]      Endian for checksum/CRC, 0: little, 1: big\n"
              "  -f [address]  Address of check result to write\n"
              "  -F [address] [value]\n                Address and value to force\n"
@@ -100,6 +101,7 @@ void usage(void)
              "                File will be filled with Pattern\n"
              "                Length must be a power of 2 in hexadecimal [see -l option]\n"
              "                Attention this option is STRONGER than Maximal Length  \n"
+             "  -o <path>     Output file path\n"
              "  -p [value]    Pad-byte value in hex (default: %x)\n"
              "  -r [start] [end]\n"
              "                Range to compute checksum over (default is min and max addresses)\n"
@@ -144,19 +146,23 @@ void *NoFailMalloc (size_t size)
 }
 
 /* Open the input file, with error checking */
-void NoFailOpenInputFile (char *Flnm)
+void NoFailOpenInputFile (const char * path)
 {
-    while ((Filin = fopen(Flnm,"r")) == NULL)
+    filetype Flnm;
+
+    while ((Filin = fopen(path,"r")) == NULL)
     {
     	if (Batch_Mode)
     	{
-			fprintf (stderr,"Input file %s cannot be opened.\n", Flnm);
+            fprintf (stderr,"Input file %s cannot be opened.\n", path);
     		exit(1);
     	}
     	else
     	{
-			fprintf (stderr,"Input file %s cannot be opened. Enter new filename: ",Flnm);
-			if (Flnm[strlen(Flnm) - 1] == '\n') Flnm[strlen(Flnm) - 1] = '\0';
+            fprintf (stderr,"Input file %s cannot be opened. Enter new filename: ",path);
+            fgets(Flnm, sizeof (filetype), stdin);
+            if (Flnm[strlen(Flnm) - 1] == '\n') Flnm[strlen(Flnm) - 1] = '\0';
+            path = Flnm;
     	}
     }
 
@@ -167,21 +173,25 @@ void NoFailOpenInputFile (char *Flnm)
 } /* procedure OPENFILIN */
 
 /* Open the output file, with error checking */
-void NoFailOpenOutputFile (char *Flnm)
+void NoFailOpenOutputFile (const char * path)
 {
-    while ((Filout = fopen(Flnm,"wb")) == NULL)
+    filetype Flnm;
+
+    while ((Filout = fopen(path,"wb")) == NULL)
     {
-    	if (Batch_Mode)
-    	{
-			fprintf (stderr,"Output file %s cannot be opened.\n", Flnm);
-    		exit(1);
-    	}
-    	else
-    	{
-			/* Failure to open the output file may be
-			 simply due to an insufficient permission setting. */
-			fprintf(stderr,"Output file %s cannot be opened. Enter new file name: ", Flnm);
-			if (Flnm[strlen(Flnm) - 1] == '\n') Flnm[strlen(Flnm) - 1] = '\0';
+        if (Batch_Mode)
+        {
+            fprintf (stderr,"Output file %s cannot be opened.\n", path);
+            exit(1);
+        }
+        else
+        {
+            /* Failure to open the output file may be
+             simply due to an insufficient permission setting. */
+            fprintf(stderr,"Output file %s cannot be opened. Enter new file name: ", path);
+            fgets(Flnm, sizeof (filetype), stdin);
+            if (Flnm[strlen(Flnm) - 1] == '\n') Flnm[strlen(Flnm) - 1] = '\0';
+            path = Flnm;
     	}
     }
 
@@ -788,6 +798,14 @@ char *p;
                 Minimum_Block_Size = GetHex(argv[Param + 1]);
                 Minimum_Block_Size_Setted = true;
                 i = 1; /* add 1 to Param */
+                break;
+            case 'o':
+                if (argc > (Param + 1))
+                {
+                    OutputFile = argv[Param + 1];
+                    i = 1; /* add 1 to Param */
+                }
+                else usage();
                 break;
             case 'p':
                 Pad_Byte = GetHex(argv[Param + 1]);
